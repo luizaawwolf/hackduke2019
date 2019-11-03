@@ -14,7 +14,7 @@ class MessagesTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         for message in messages{
-            print(message.message)
+            //print(message.message)
         }
         self.tableView.reloadData()
     }
@@ -35,16 +35,36 @@ class MessagesTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! MessageTableViewCell
+        
+        cell.initText(message: messages[indexPath.row].message)
         let thisMessage = messages[indexPath.row]
+        let size = CGSize.init(width: 250, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        let estimatedFrame = NSString(string: thisMessage.message).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font:UIFont.systemFont(ofSize: 18)], context: nil)
+        
         if thisMessage.user == "bot"{
-            cell.messageText.text = thisMessage.message
-            //on the left, gray
+            cell.messageText.frame = CGRect.init(x: 16+8, y: 0, width: estimatedFrame.width+16, height: estimatedFrame.height+20)
+            cell.chatBubbleView.frame = CGRect.init(x: 16, y: 0, width: estimatedFrame.width+16+8, height: estimatedFrame.height+20)
+            cell.chatBubbleView.backgroundColor = UIColor(red: 0.078, green: 0.494, blue: 0.984, alpha: 1.0)
+            cell.messageText.textColor = UIColor.white
+            
         } else {
-            cell.messageText.text = thisMessage.message
-            //on the right, blue
+            cell.chatBubbleView.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
+            cell.messageText.textColor = UIColor.black
+            cell.messageText.frame = CGRect.init(x: view.frame.width-estimatedFrame.width-16-16, y: 0, width: estimatedFrame.width+16, height: estimatedFrame.height+20)
+            cell.chatBubbleView.frame = CGRect.init(x: view.frame.width-estimatedFrame.width-16-16-16, y: 0, width: estimatedFrame.width+16+8, height: estimatedFrame.height+20)
         }
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let thisMessage = messages[indexPath.row]
+        let size = CGSize.init(width: 250, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        let estimatedFrame = NSString(string: thisMessage.message).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font:UIFont.systemFont(ofSize: 18)], context: nil)
+        return estimatedFrame.height + 30
+    }
+    
 
     /*
     // Override to support conditional editing of the table view.

@@ -10,11 +10,15 @@ import UIKit
 import ApiAI
 import AVFoundation
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate {
 
+    
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBAction func send(_ sender: Any) {
+        sendRequest()
+    }
+    func sendRequest(){
         let request = ApiAI.shared().textRequest()
         print(self.messageField.text)
         if let text = self.messageField.text, text != "" {
@@ -29,10 +33,12 @@ class ViewController: UIViewController {
         request?.setMappedCompletionBlockSuccess({ (request, response) in
             let response = response as! AIResponse
             if let textResponse = response.result.fulfillment.speech {
-                print(textResponse)
-                self.response.text = textResponse
-                var newMessage = ChatMessage.init(message: textResponse, user: "bot")
-                GlobalVariables.sharedInstance.messagesArray.append(newMessage!)
+                let messages = textResponse.components(separatedBy: "/newmessage")
+                for message in messages{
+                    self.formatWithURLs(text: message)
+                    var newMessage = ChatMessage.init(message: message, user: "bot")
+                    GlobalVariables.sharedInstance.messagesArray.append(newMessage!)
+                }
                 self.reloadTable()
                 //self.speechAndText(text: textResponse)
             }
@@ -45,14 +51,38 @@ class ViewController: UIViewController {
         reloadTable()
     }
     @IBOutlet weak var messageField: UITextField!
-    @IBOutlet weak var response: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        var newMessage = ChatMessage.init(message: "Hi, I'm Penny! I'm here to help you in your search for employment, housing, and financial independence. What are you looking for today?", user: "bot")
+        GlobalVariables.sharedInstance.messagesArray.append(newMessage!)
+        reloadTable()
+        self.messageField.delegate = self
+        messageField.layer.cornerRadius = 50.0
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {}
+    @objc func keyboardWillHide(notification: NSNotification) {}
+    
+    func formatWithURLs(text:String)
+    {
+        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        let matches = detector.matches(in: text, options: [], range: NSRange(location: 0, length: text.utf16.count))
+        print("URL")
+        for match in matches {
+            guard let range = Range(match.range, in: text) else { continue }
+            let url = text[range]
+            print(url)
+        }
+        
     }
     
     func reloadTable(){
-        let controller = storyboard!.instantiateViewController(withIdentifier: "MessagesTableViewController")
+        let controller = storyboard!.instantiateViewController(withIdentifier: "MessagesTableViewController") as! MessagesTableViewController
         addChild(controller)
         controller.view.translatesAutoresizingMaskIntoConstraints = false
         print(containerView)
@@ -65,7 +95,7 @@ class ViewController: UIViewController {
         print (scrollView.frame.height)
         print (scrollView.contentSize.height)
         controller.didMove(toParent: self)
-        
+        controller.tableView.scrollToRow(at: IndexPath.init(row: GlobalVariables.sharedInstance.messagesArray.count-1, section: 0), at: .bottom, animated: false)
     }
     
 //    let speechSynthesizer = AVSpeechSynthesizer()
