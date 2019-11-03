@@ -13,9 +13,6 @@ target 'HackDuke2019' do
   pod 'Toolbar'
   #Messages TableView
   pod 'ReverseExtension'
-  # Pods for HackDuke2019
-  pod 'PromiseKit', '~> 4.0'
-  
   pod 'ApiAI'
   
 end

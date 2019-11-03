@@ -25,17 +25,6 @@ PODS:
     - ApiAI/Core
   - ApiAI/VoiceRequest (0.7.2):
     - ApiAI/Core
-  - PromiseKit (4.5.2):
-    - PromiseKit/Foundation (= 4.5.2)
-    - PromiseKit/QuartzCore (= 4.5.2)
-    - PromiseKit/UIKit (= 4.5.2)
-  - PromiseKit/CorePromise (4.5.2)
-  - PromiseKit/Foundation (4.5.2):
-    - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (4.5.2):
-    - PromiseKit/CorePromise
-  - PromiseKit/UIKit (4.5.2):
-    - PromiseKit/CorePromise
   - ReverseExtension (0.5.0)
   - SnapKit (4.0.1)
   - Toolbar (0.7.3)
@@ -43,7 +32,6 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 4.5)
   - ApiAI
-  - PromiseKit (~> 4.0)
   - ReverseExtension
   - SnapKit (~> 4.0.0)
   - Toolbar
@@ -52,7 +40,6 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - ApiAI
-    - PromiseKit
     - ReverseExtension
     - SnapKit
     - Toolbar
@@ -60,11 +47,10 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
   ApiAI: d4b49d3736f33ce6f3ef66dc33c0e0fccb23579e
-  PromiseKit: 743e497a5f505a470d3bbbf4ce0663c1268af0a4
   ReverseExtension: 21c8dd4e767f93b56fb97d873686d24160f83945
   SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
   Toolbar: 4321f97ec8ea5f20ecee5a55e505a319bd5e3021
 
-PODFILE CHECKSUM: 7855e5b8aa13225a6d8cb7d02c9c913350639455
+PODFILE CHECKSUM: 0c452185859392966a4894683521d8bb8f73ef31
 
 COCOAPODS: 1.8.4
