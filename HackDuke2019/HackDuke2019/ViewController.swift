@@ -12,6 +12,8 @@ import AVFoundation
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var containerView: UIView!
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBAction func send(_ sender: Any) {
         let request = ApiAI.shared().textRequest()
         print(self.messageField.text)
@@ -21,11 +23,17 @@ class ViewController: UIViewController {
             return
         }
         
+        var newMessage = ChatMessage.init(message: self.messageField.text!, user: "user")
+        GlobalVariables.sharedInstance.messagesArray.append(newMessage!)
+        
         request?.setMappedCompletionBlockSuccess({ (request, response) in
             let response = response as! AIResponse
             if let textResponse = response.result.fulfillment.speech {
                 print(textResponse)
                 self.response.text = textResponse
+                var newMessage = ChatMessage.init(message: textResponse, user: "bot")
+                GlobalVariables.sharedInstance.messagesArray.append(newMessage!)
+                self.reloadTable()
                 //self.speechAndText(text: textResponse)
             }
         }, failure: { (request, error) in
@@ -34,12 +42,30 @@ class ViewController: UIViewController {
         
         ApiAI.shared().enqueue(request)
         messageField.text = ""
+        reloadTable()
     }
     @IBOutlet weak var messageField: UITextField!
     @IBOutlet weak var response: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+    }
+    
+    func reloadTable(){
+        let controller = storyboard!.instantiateViewController(withIdentifier: "MessagesTableViewController")
+        addChild(controller)
+        controller.view.translatesAutoresizingMaskIntoConstraints = false
+        print(containerView)
+        print(controller)
+        print(controller.view)
+        containerView.addSubview(controller.view)
+//        //print (controller.view.frame.height)
+//
+        scrollView.contentSize = CGSize(width: containerView.frame.width, height: controller.view.frame.height)
+        print (scrollView.frame.height)
+        print (scrollView.contentSize.height)
+        controller.didMove(toParent: self)
+        
     }
     
 //    let speechSynthesizer = AVSpeechSynthesizer()

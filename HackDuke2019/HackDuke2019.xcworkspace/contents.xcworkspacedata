@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:ChatMessage.swift">
+   </FileRef>
+   <FileRef
       location = "group:HackDuke2019.xcodeproj">
    </FileRef>
    <FileRef
